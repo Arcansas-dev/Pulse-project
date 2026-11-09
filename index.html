@@ -46,6 +46,51 @@ svg.i{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.6;stro
 .lrow .lw{font-weight:600;color:var(--ink2);overflow-wrap:anywhere}
 .lrow .lx{color:var(--ink);overflow-wrap:anywhere}
 @media (max-width:760px){.lrow{grid-template-columns:48px minmax(0,1fr)}.lrow .lx{grid-column:2}}
+
+.gtools{display:flex;gap:8px;align-items:center;margin:-4px 0 14px;flex-wrap:wrap}
+.gtools .sp{flex:1}
+.gtools .btn{padding:6px 12px;font-size:13px}
+.gleg{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink2)}
+.gleg b{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.gwrap{--lw:210px;--dw:24px;overflow:auto;max-height:372px;border:1px solid var(--hair2);border-radius:8px;background:var(--paper);cursor:grab;overscroll-behavior:contain}
+.gwrap.drag{cursor:grabbing;user-select:none}
+.ginner{display:grid;grid-template-columns:var(--lw) var(--gw);position:relative;min-width:max-content}
+.gh{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:1px solid var(--hair2)}
+.gl{position:sticky;left:0;z-index:4;background:var(--paper);border-right:1px solid var(--hair2);padding:0 12px;display:flex;flex-direction:column;justify-content:center;min-width:0;height:28px;border-bottom:1px solid var(--hair)}
+.gl.gh{z-index:6;height:auto;font:500 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute);justify-content:flex-end;padding-bottom:5px;border-bottom:1px solid var(--hair2)}
+.gl button{all:unset;cursor:pointer;font-size:12px;line-height:13px;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.gl button:hover{color:var(--blue)}
+.gl small{font-size:10px;line-height:11px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gt{position:relative;height:28px;border-bottom:1px solid var(--hair);background-image:linear-gradient(to right,var(--hair) 1px,transparent 1px);background-size:var(--dw) 100%}
+.gm{display:flex;height:18px;font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
+.gm span{border-left:1px solid var(--hair2);padding:3px 0 0 6px;box-sizing:border-box;overflow:hidden;white-space:nowrap}
+.gd{display:flex;height:18px;font:400 10px var(--mono);color:var(--mute)}
+.gd span{width:var(--dw);flex:none;text-align:center;line-height:18px;box-sizing:border-box}
+.gd span.we{background:var(--tint)}
+.gbar{all:unset;position:absolute;top:7px;height:14px;border-radius:4px;cursor:pointer;box-sizing:border-box;overflow:hidden;z-index:1}
+.gbar:hover{filter:brightness(.92)}
+.gbar i{position:absolute;inset:0 auto 0 0;background:var(--blue);opacity:.55}
+.gbar.late{box-shadow:0 0 0 1.5px var(--alert)}
+.gms{position:absolute;top:9px;width:10px;height:10px;background:var(--ink);transform:rotate(45deg) translate(-4px,-4px);z-index:1}
+.gtoday{position:absolute;top:0;bottom:0;width:2px;background:var(--alert);opacity:.7;z-index:3;pointer-events:none}
+@media (max-width:760px){.gwrap{--lw:128px;max-height:340px}}
+/* barre di scorrimento nei toni del blu */
+.gwrap,html{scrollbar-width:thin;scrollbar-color:var(--blue) var(--tint)}
+@supports selector(::-webkit-scrollbar){
+ .gwrap,html{scrollbar-width:auto;scrollbar-color:auto}
+ .gwrap::-webkit-scrollbar,html::-webkit-scrollbar{width:12px;height:12px}
+ .gwrap::-webkit-scrollbar-track,html::-webkit-scrollbar-track{background:var(--tint)}
+ .gwrap::-webkit-scrollbar-thumb,html::-webkit-scrollbar-thumb{background:var(--blue);border-radius:6px;border:2px solid var(--tint)}
+ .gwrap::-webkit-scrollbar-thumb:hover,html::-webkit-scrollbar-thumb:hover{background:#182E58}
+ .gwrap::-webkit-scrollbar-corner,html::-webkit-scrollbar-corner{background:var(--tint)}
+ .gwrap::-webkit-scrollbar-button,html::-webkit-scrollbar-button{background-color:var(--tint);background-repeat:no-repeat;background-position:center;background-size:8px;width:12px;height:12px}
+ .gwrap::-webkit-scrollbar-button:hover,html::-webkit-scrollbar-button:hover{background-color:var(--grey-bg)}
+ .gwrap::-webkit-scrollbar-button:horizontal:decrement,html::-webkit-scrollbar-button:horizontal:decrement{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M5.5 1.5 2.5 4l3 2.5' fill='none' stroke='%2324417A' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+ .gwrap::-webkit-scrollbar-button:horizontal:increment,html::-webkit-scrollbar-button:horizontal:increment{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M2.5 1.5 5.5 4l-3 2.5' fill='none' stroke='%2324417A' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+ .gwrap::-webkit-scrollbar-button:vertical:decrement,html::-webkit-scrollbar-button:vertical:decrement{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M1.5 5.5 4 2.5l2.5 3' fill='none' stroke='%2324417A' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+ .gwrap::-webkit-scrollbar-button:vertical:increment,html::-webkit-scrollbar-button:vertical:increment{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M1.5 2.5 4 5.5l2.5-3' fill='none' stroke='%2324417A' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+}
+
 .ngrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:4px}
 .ncard{background:var(--paper);border:1px solid var(--hair2);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px;min-width:0;text-align:left;font:inherit;color:var(--ink);cursor:pointer}
 .ncard:hover{border-color:var(--blue)}
@@ -310,7 +355,7 @@ var ICONS={
 };
 function ico(n){return '<svg class="i" viewBox="0 0 24 24" aria-hidden="true">'+ICONS[n]+'</svg>'}
 var CHECK='<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.2 6.4l2.6 2.6 5-5.6"/></svg>';
-var S=null, U={view:"dash",mode:"list",open:{},f:{q:"",st:"",ow:"",cat:""},fi:{q:"",st:"open",sv:""},nq:"",lq:"",confirm:null};
+var S=null, U={view:"dash",mode:"list",open:{},f:{q:"",st:"",ow:"",cat:""},fi:{q:"",st:"open",sv:""},nq:"",gz:24,lq:"",confirm:null};
 var storageOK=true;
 
 function uid(){return Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-3)}
@@ -493,6 +538,41 @@ function renderTop(){
 }
 
 /* ---------- viste ---------- */
+function gantt(T,p,td){
+  var L=T.filter(function(t){return t.start||t.due}).map(function(t){var a=t.start||t.due,b=t.due||t.start;if(b<a){var x=a;a=b;b=x}return{t:t,a:a,b:b}});
+  var ms=(p.milestones||[]).filter(function(m){return m.date});
+  if(!L.length)return '<div class="sheet pad"><h2>Cronoprogramma</h2><p class="note">Aggiungi inizio e scadenza ai task per vederli qui.</p></div>';
+  L.sort(function(x,y){return x.a<y.a?-1:x.a>y.a?1:(x.b<y.b?-1:1)});
+  var lo=td,hi=td;L.forEach(function(r){if(r.a<lo)lo=r.a;if(r.b>hi)hi=r.b});ms.forEach(function(m){if(m.date<lo)lo=m.date;if(m.date>hi)hi=m.date});
+  lo=addDays(lo,-3);hi=addDays(hi,7);
+  var dw=U.gz,n=diff(hi,lo)+1,col={todo:"var(--grey-dot)",doing:"var(--sky2)",blocked:"var(--alert)",done:"var(--blue)"};
+  var MN=["Gen","Feb","Mar","Apr","Mag","Giu","Lug","Ago","Set","Ott","Nov","Dic"];
+  var mh="",dh="",i,cur=null,span=0,mlab="";
+  for(i=0;i<n;i++){var d=toD(addDays(lo,i)),key=d.getFullYear()+"-"+d.getMonth(),wd=d.getDay();
+    if(key!==cur){if(cur!==null)mh+='<span style="width:'+span*dw+'px">'+mlab+'</span>';cur=key;span=0;mlab=MN[d.getMonth()]+" "+String(d.getFullYear()).slice(2)}
+    span++;
+    dh+='<span class="'+(wd===0||wd===6?"we":"")+'">'+(dw>=20||wd===1?d.getDate():"")+'</span>'}
+  mh+='<span style="width:'+span*dw+'px">'+mlab+'</span>';
+  var w0=toD(lo).getDay(),mon=((8-w0)%7)*dw;
+  var rows='<div class="gl gh">Task</div><div class="gh"><div class="gm">'+mh+'</div><div class="gd">'+dh+'</div></div>';
+  if(ms.length){rows+='<div class="gl"><small>Milestone</small></div><div class="gt">'+ms.map(function(m){return '<span class="gms" title="'+esc(m.title+" · "+fmt(m.date))+'" style="left:'+(diff(m.date,lo)*dw+dw/2)+'px"></span>'}).join("")+'</div>'}
+  L.forEach(function(r){var t=r.t,x=diff(r.a,lo)*dw,w=(diff(r.b,r.a)+1)*dw-2,sb=subs(t),pc=sb.length?Math.round(subDone(t)/sb.length*100):0;
+    var tip=t.title+" · "+fmt(r.a)+(r.b!==r.a?" - "+fmt(r.b):"")+" · "+lab(STATUS_T,t.status)+(t.owner?" · "+t.owner:"");
+    rows+='<div class="gl"><button data-act="open-task" data-id="'+t.id+'" title="'+esc(tip)+'">'+esc(t.title)+'</button><small>'+esc(t.owner||"Non assegnata")+'</small></div>'+
+      '<div class="gt"><button class="gbar'+(isLate(t)?" late":"")+'" data-act="open-task" data-id="'+t.id+'" title="'+esc(tip)+'" style="left:'+x+'px;width:'+Math.max(w,6)+'px;background:'+col[t.status]+'">'+(pc&&t.status!=="done"?'<i style="width:'+pc+'%"></i>':"")+'</button></div>'});
+  var tx=diff(td,lo)*dw+dw/2;
+  var leg=STATUS_T.map(function(s){return '<span><b style="background:'+col[s[0]]+'"></b>'+s[1]+'</span>'}).join("")+'<span><b style="background:var(--ink);transform:rotate(45deg) scale(.8)"></b>Milestone</span><span><b style="background:var(--alert);width:2px;border-radius:0"></b>Oggi</span>';
+  return '<div class="sheet pad"><h2>Cronoprogramma</h2><div class="gtools"><div class="gleg">'+leg+'</div><span class="sp"></span><button class="btn" data-act="gtoday">Oggi</button><button class="btn" data-act="gzoom" data-d="-1" aria-label="Riduci">−</button><button class="btn" data-act="gzoom" data-d="1" aria-label="Ingrandisci">+</button></div>'+
+    '<div class="gwrap" id="gwrap" data-tx="'+tx+'" style="--dw:'+dw+'px"><div class="ginner" style="--gw:'+n*dw+'px">'+rows+'<div class="gtoday" style="left:calc(var(--lw) + '+tx+'px - 1px)"></div></div></div>'+
+    '<p class="note" style="margin-top:8px">Trascina con il mouse o scorri per spostarti nel tempo. Clicca una barra per aprire il task.</p></div>';
+}
+function gtoday(smooth){var w=document.getElementById("gwrap");if(!w)return;var tx=+w.dataset.tx;w.scrollTo({left:Math.max(0,tx-w.clientWidth*.35),behavior:smooth?"smooth":"auto"})}
+(function(){var w=null,x0=0,s0=0,moved=false;
+  document.addEventListener("mousedown",function(e){moved=false;var g=e.target.closest&&e.target.closest("#gwrap");if(!g||e.button!==0)return;w=g;x0=e.clientX;s0=g.scrollLeft;moved=false});
+  document.addEventListener("mousemove",function(e){if(!w)return;var dx=e.clientX-x0;if(Math.abs(dx)>3){moved=true;w.classList.add("drag")}if(moved)w.scrollLeft=s0-dx});
+  document.addEventListener("mouseup",function(){if(w){w.classList.remove("drag");w=null}});
+  document.addEventListener("click",function(e){if(moved){moved=false;e.stopPropagation();e.preventDefault()}},true);
+})();
 function viewDash(){
   var p=proj(),T=pT(),I=pI(),td=today();
   var late=T.filter(isLate), soon=T.filter(isSoon), blocked=T.filter(function(t){return t.status==="blocked"});
@@ -524,6 +604,7 @@ function viewDash(){
    '<div class="sheet pad"><div class="hero"><div class="big">'+pr+'<small>%</small></div><div><div class="eyebrow">Avanzamento</div><div class="track"><i style="width:'+pr+'%"></i>'+'<u style="left:max(0px,calc('+pr+'% - 2px))" title="Avanzamento reale"></u>'+'</div><div class="track-l"><span>reale '+pr+'%</span>'+(pl!=null?'<span>previsto oggi '+pl+'%</span>':"")+(p.end?'<span>fine '+fmt(p.end)+'</span>':"")+'</div></div></div>'+
    '<div class="health"><span class="d '+cls+'"></span><div><b>'+head+'.</b> <span class="t">'+det+'</span></div></div></div>'+
    '<div class="stats"><div class="stat'+(late.length?" bad":"")+'"><b>'+late.length+'</b><span>Task in ritardo</span></div><div class="stat'+(crit.length?" bad":"")+'"><b>'+oi.length+'</b><span>Issue e rischi aperti</span></div><div class="stat"><b>'+blocked.length+'</b><span>Task bloccati</span></div><div class="stat hi"><b>'+(daysLeft==null?"–":daysLeft)+'</b><span>Giorni alla fine</span></div></div>'+
+   gantt(T,p,td).replace('<div class="sheet pad">','<div class="sheet pad" style="margin-top:40px">')+
    '<div class="cols"><div class="sheet pad"><h2>Stato dei task</h2><div class="seg">'+seg+'</div><div class="legend">'+leg+'</div><h2 style="margin-top:26px">Carico aperto per persona</h2>'+owH+'</div>'+
    '<div class="sheet pad"><h2>Prossimi 14 giorni</h2>'+nx+'</div>'+
    '<div class="sheet pad"><h2>Issue da seguire</h2>'+hot+'</div>'+bud+'</div>';
@@ -639,6 +720,7 @@ function render(){
   renderTop();
   var v={dash:viewDash,tasks:viewTasks,issues:viewIssues,dead:viewDead,notes:viewNotes,log:viewLog,info:viewInfo,data:viewData}[U.view]();
   $("#view").innerHTML=(storageOK?"":'<div class="banner">Salvataggio locale non disponibile in questa finestra. Esporta i dati dalla scheda Dati per non perderli.</div>')+v;
+  if(U.view==="dash")gtoday(false);
   if(id){var e=document.getElementById(id);if(e&&(e.matches("input,select,textarea"))){e.focus();try{if(ss!=null)e.setSelectionRange(ss,ss)}catch(x){}}}
 }
 
@@ -753,6 +835,8 @@ document.addEventListener("click",function(e){
   var t=e.target.closest("[data-act]");if(!t)return;var a=t.dataset.act,id=t.dataset.id;
   if(a==="bg"){if(e.target===t)close();return}
   switch(a){
+   case "gtoday":gtoday(true);break;
+   case "gzoom":U.gz=Math.max(10,Math.min(48,U.gz+(+t.dataset.d)*8));render();break;
    case "view":U.view=t.dataset.v;U.confirm=null;render();window.scrollTo(0,0);break;
    case "mode":U.mode=t.dataset.m;render();break;
    case "toggle":var k=byId(S.tasks,id);setStatus(k,k.status==="done"?"todo":"done");S.sample=false;save();render();break;
