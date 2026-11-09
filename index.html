@@ -120,6 +120,7 @@ main{min-width:0;padding:30px 0 56px 52px}
 .sheet{border-top:1px solid var(--hair2);min-width:0}
 .sheet.pad{padding:20px 0 0}
 .sheet h2{margin:0 0 16px;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.addp{display:flex;gap:8px;align-items:center;margin-top:-6px}.addp input{flex:1}.addp .btn{flex:none;padding:10px 16px}
 .stack{display:flex;flex-direction:column;gap:40px;min-width:0}
 .hbscroll{max-height:236px;overflow-y:auto;padding-right:6px;margin-right:-6px}
 .cols{display:grid;gap:40px 56px;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));margin-top:40px}
@@ -745,6 +746,16 @@ function modal(title,fields,kind,id,canDel){
 function ownerField(v){v=v||"";var l=owners();if(v&&l.indexOf(v)<0)l.push(v);l.sort();
   return '<label>Responsabile<select id="f_owner" name="owner" data-own="1"><option value="">Nessuno</option>'+l.map(function(o){return '<option value="'+esc(o)+'"'+(o===v?' selected':'')+'>'+esc(o)+'</option>'}).join("")+'<option value="__new__">Altro, scrivi un nome…</option></select><input id="f_owner_new" name="owner_new" placeholder="Nome e cognome" hidden></label>'}
 function ownerChecks(v){var cur=ppl(v),l=owners();cur.forEach(function(n){if(l.indexOf(n)<0)l.push(n)});l.sort();return l.map(function(n){return '<label><input type="checkbox" name="owners" value="'+esc(n)+'"'+(cur.indexOf(n)>-1?" checked":"")+'> '+esc(n)+'</label>'}).join("")||'<span class="note">Nessuna persona ancora: scrivi i nomi qui sotto.</span>'}
+function addPerson(){
+  var inp=document.getElementById("f_owner_extra"),box=document.getElementById("ownlist");if(!inp||!box)return;
+  var have={};[].forEach.call(box.querySelectorAll("input[name=owners]"),function(c){have[c.value.toLowerCase()]=c});
+  var ph=box.querySelector(".note");if(ph&&ppl(inp.value).length)ph.remove();
+  ppl(inp.value).forEach(function(n){var c=have[n.toLowerCase()];
+    if(c){c.checked=true;return}
+    var l=document.createElement("label"),i=document.createElement("input");i.type="checkbox";i.name="owners";i.value=n;i.checked=true;
+    l.appendChild(i);l.appendChild(document.createTextNode(" "+n));box.appendChild(l);have[n.toLowerCase()]=i});
+  inp.value="";inp.focus();box.scrollTop=box.scrollHeight;
+}
 function ownerList(){return '<datalist id="own">'+owners().map(function(o){return '<option value="'+esc(o)+'">'}).join("")+'</datalist>'}
 function taskForm(t){
   var nw=!t;t=t||{status:"todo",priority:"Media",owner:"",start:today(),due:"",est:"",dep:[],title:"",desc:"",notes:""};
@@ -752,7 +763,7 @@ function taskForm(t){
   var dep=others.map(function(x){return '<label><input type="checkbox" name="dep" value="'+x.id+'"'+((t.dep||[]).indexOf(x.id)>-1?" checked":"")+'> '+esc(x.title)+'</label>'}).join("")||'<span class="note">Nessun altro task.</span>';
   modal(nw?"Nuovo task":"Task",
     F("title","Titolo","text",t.title,{full:1,req:1})+F("status","Stato","select",0,{o:opts(STATUS_T,t.status)})+F("priority","Priorità","select",0,{o:opts(PRIO,t.priority)})+
-    F("owners","Chi segue la task","checks",0,{full:1,o:ownerChecks(t.owner)})+F("owner_extra","Altre persone (nomi separati da virgola)","text","",{full:1})+(function(){return '<label>Categoria<input id="f_cat" name="cat" list="cats" value="'+esc(t.cat||"")+'"></label><datalist id="cats">'+cats().map(function(o){return '<option value="'+esc(o)+'">'}).join("")+'</datalist>'})()+F("est","Stima (ore)","number",t.est)+
+    '<label class="full">Chi segue la task<div class="checks" id="ownlist">'+ownerChecks(t.owner)+'</div></label><div class="full addp"><input id="f_owner_extra" name="owner_extra" placeholder="Aggiungi un nome e premi Invio" autocomplete="off" aria-label="Aggiungi una persona"><button type="button" class="btn" data-act="addperson">Aggiungi</button></div>'+(function(){return '<label>Categoria<input id="f_cat" name="cat" list="cats" value="'+esc(t.cat||"")+'"></label><datalist id="cats">'+cats().map(function(o){return '<option value="'+esc(o)+'">'}).join("")+'</datalist>'})()+F("est","Stima (ore)","number",t.est)+
     F("start","Inizio","date",t.start)+F("due","Scadenza","date",t.due)+F("desc","Descrizione e come farlo","textarea",t.desc,{full:1})+
     F("subs","Aggiungi sotto-attività (una per riga)","textarea","",{full:1})+F("dep","Dipende da (devono essere finiti prima)","checks",0,{full:1,o:dep})+F("notes","Note","textarea",t.notes||"",{full:1}),"task",t.id,!nw);
 }
@@ -840,6 +851,7 @@ document.addEventListener("click",function(e){
   var t=e.target.closest("[data-act]");if(!t)return;var a=t.dataset.act,id=t.dataset.id;
   if(a==="bg"){if(e.target===t)close();return}
   switch(a){
+   case "addperson":addPerson();break;
    case "gtoday":gtoday(true);break;
    case "gzoom":U.gz=Math.max(10,Math.min(48,U.gz+(+t.dataset.d)*8));render();break;
    case "view":U.view=t.dataset.v;U.confirm=null;render();window.scrollTo(0,0);break;
@@ -884,7 +896,7 @@ document.addEventListener("change",function(e){
   if(e.target.id==="projSel"){S.active=e.target.value;save();render()}
   if(e.target.id==="impf"&&e.target.files[0]){var r=new FileReader();r.onload=function(){document.getElementById("impt").value=r.result;U.confirm="imp";var b=document.querySelector('[data-act="imp-txt"]');if(b)b.textContent="Conferma: sostituisci tutto";toast("File caricato. Premi Conferma per sostituire i dati.")};r.readAsText(e.target.files[0])}
 });
-document.addEventListener("keydown",function(e){var el=e.target;if(e.key==="Enter"&&el.dataset&&el.dataset.subadd){e.preventDefault();var v=el.value.trim();if(!v)return;var pk=byId(S.tasks,el.dataset.subadd);pk.sub=subs(pk).concat([{id:uid(),title:v,owner:"",due:"",done:false}]);if(pk.status==="done")pk.status="doing";S.sample=false;save();render();var n2=document.getElementById("sa_"+pk.id);if(n2)n2.focus()}});
+document.addEventListener("keydown",function(e){var el=e.target;if(e.key==="Enter"&&el.id==="f_owner_extra"){e.preventDefault();addPerson();return}if(e.key==="Enter"&&el.dataset&&el.dataset.subadd){e.preventDefault();var v=el.value.trim();if(!v)return;var pk=byId(S.tasks,el.dataset.subadd);pk.sub=subs(pk).concat([{id:uid(),title:v,owner:"",due:"",done:false}]);if(pk.status==="done")pk.status="doing";S.sample=false;save();render();var n2=document.getElementById("sa_"+pk.id);if(n2)n2.focus()}});
 document.addEventListener("keydown",function(e){if(e.key==="Escape"&&$("#layer").innerHTML)close()});
 /* ---------- sincronizzazione di squadra (Supabase) ---------- */
 var SB_URL="https://odzoetrsiplkkqiibnjw.supabase.co",SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kem9ldHJzaXBsa2txaWlibmp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM4ODUwNTMsImV4cCI6MjEwOTQ2MTA1M30.i7NANUoHhTtEgMR6E8GhIM9YkFYL5ex9e4MtUrZXu6g",SNAPK="pulse-team-snap-v1";
