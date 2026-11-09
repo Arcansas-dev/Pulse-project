@@ -75,20 +75,20 @@ svg.i{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.6;stro
 .gtoday{position:absolute;top:0;bottom:0;width:2px;background:var(--alert);opacity:.7;z-index:3;pointer-events:none}
 @media (max-width:760px){.gwrap{--lw:128px;max-height:340px}}
 /* barre di scorrimento nei toni del blu */
-.gwrap,html{scrollbar-width:thin;scrollbar-color:var(--blue) var(--tint)}
+.gwrap,.hbscroll,html{scrollbar-width:thin;scrollbar-color:var(--blue) var(--tint)}
 @supports selector(::-webkit-scrollbar){
- .gwrap,html{scrollbar-width:auto;scrollbar-color:auto}
- .gwrap::-webkit-scrollbar,html::-webkit-scrollbar{width:12px;height:12px}
- .gwrap::-webkit-scrollbar-track,html::-webkit-scrollbar-track{background:var(--tint)}
- .gwrap::-webkit-scrollbar-thumb,html::-webkit-scrollbar-thumb{background:var(--blue);border-radius:6px;border:2px solid var(--tint)}
- .gwrap::-webkit-scrollbar-thumb:hover,html::-webkit-scrollbar-thumb:hover{background:#182E58}
- .gwrap::-webkit-scrollbar-corner,html::-webkit-scrollbar-corner{background:var(--tint)}
- .gwrap::-webkit-scrollbar-button,html::-webkit-scrollbar-button{background-color:var(--tint);background-repeat:no-repeat;background-position:center;background-size:8px;width:12px;height:12px}
- .gwrap::-webkit-scrollbar-button:hover,html::-webkit-scrollbar-button:hover{background-color:var(--grey-bg)}
- .gwrap::-webkit-scrollbar-button:horizontal:decrement,html::-webkit-scrollbar-button:horizontal:decrement{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M5.5 1.5 2.5 4l3 2.5' fill='none' stroke='%2324417A' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
- .gwrap::-webkit-scrollbar-button:horizontal:increment,html::-webkit-scrollbar-button:horizontal:increment{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M2.5 1.5 5.5 4l-3 2.5' fill='none' stroke='%2324417A' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
- .gwrap::-webkit-scrollbar-button:vertical:decrement,html::-webkit-scrollbar-button:vertical:decrement{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M1.5 5.5 4 2.5l2.5 3' fill='none' stroke='%2324417A' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
- .gwrap::-webkit-scrollbar-button:vertical:increment,html::-webkit-scrollbar-button:vertical:increment{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M1.5 2.5 4 5.5l2.5-3' fill='none' stroke='%2324417A' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+ .gwrap,.hbscroll,html{scrollbar-width:auto;scrollbar-color:auto}
+ .gwrap::-webkit-scrollbar,.hbscroll::-webkit-scrollbar,html::-webkit-scrollbar{width:12px;height:12px}
+ .gwrap::-webkit-scrollbar-track,.hbscroll::-webkit-scrollbar,html::-webkit-scrollbar-track{background:var(--tint)}
+ .gwrap::-webkit-scrollbar-thumb,.hbscroll::-webkit-scrollbar,html::-webkit-scrollbar-thumb{background:var(--blue);border-radius:6px;border:2px solid var(--tint)}
+ .gwrap::-webkit-scrollbar-thumb:hover,.hbscroll::-webkit-scrollbar,html::-webkit-scrollbar-thumb:hover{background:#182E58}
+ .gwrap::-webkit-scrollbar-corner,.hbscroll::-webkit-scrollbar,html::-webkit-scrollbar-corner{background:var(--tint)}
+ .gwrap::-webkit-scrollbar-button,.hbscroll::-webkit-scrollbar,html::-webkit-scrollbar-button{background-color:var(--tint);background-repeat:no-repeat;background-position:center;background-size:8px;width:12px;height:12px}
+ .gwrap::-webkit-scrollbar-button:hover,.hbscroll::-webkit-scrollbar,html::-webkit-scrollbar-button:hover{background-color:var(--grey-bg)}
+ .gwrap::-webkit-scrollbar-button:horizontal:decrement,.hbscroll::-webkit-scrollbar,html::-webkit-scrollbar-button:horizontal:decrement{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M5.5 1.5 2.5 4l3 2.5' fill='none' stroke='%2324417A' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+ .gwrap::-webkit-scrollbar-button:horizontal:increment,.hbscroll::-webkit-scrollbar,html::-webkit-scrollbar-button:horizontal:increment{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M2.5 1.5 5.5 4l-3 2.5' fill='none' stroke='%2324417A' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+ .gwrap::-webkit-scrollbar-button:vertical:decrement,.hbscroll::-webkit-scrollbar,html::-webkit-scrollbar-button:vertical:decrement{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M1.5 5.5 4 2.5l2.5 3' fill='none' stroke='%2324417A' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+ .gwrap::-webkit-scrollbar-button:vertical:increment,.hbscroll::-webkit-scrollbar,html::-webkit-scrollbar-button:vertical:increment{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M1.5 2.5 4 5.5l2.5-3' fill='none' stroke='%2324417A' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
 }
 
 .ngrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:4px}
@@ -120,6 +120,8 @@ main{min-width:0;padding:30px 0 56px 52px}
 .sheet{border-top:1px solid var(--hair2);min-width:0}
 .sheet.pad{padding:20px 0 0}
 .sheet h2{margin:0 0 16px;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.stack{display:flex;flex-direction:column;gap:40px;min-width:0}
+.hbscroll{max-height:236px;overflow-y:auto;padding-right:6px;margin-right:-6px}
 .cols{display:grid;gap:40px 56px;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));margin-top:40px}
 .btn{border:1px solid var(--hair2);background:var(--paper);border-radius:8px;padding:8px 16px;font-weight:550;font-size:14px;min-height:38px}
 .btn:hover{background:var(--tint)}
@@ -607,9 +609,9 @@ function viewDash(){
    '<div class="health"><span class="d '+cls+'"></span><div><b>'+head+'.</b> <span class="t">'+det+'</span></div></div></div>'+
    '<div class="stats"><div class="stat'+(late.length?" bad":"")+'"><b>'+late.length+'</b><span>Task in ritardo</span></div><div class="stat'+(crit.length?" bad":"")+'"><b>'+oi.length+'</b><span>Issue e rischi aperti</span></div><div class="stat"><b>'+blocked.length+'</b><span>Task bloccati</span></div><div class="stat hi"><b>'+(daysLeft==null?"–":daysLeft)+'</b><span>Giorni alla fine</span></div></div>'+
    gantt(T,p,td).replace('<div class="sheet pad">','<div class="sheet pad" style="margin-top:40px">')+
-   '<div class="cols"><div class="sheet pad"><h2>Stato dei task</h2><div class="seg">'+seg+'</div><div class="legend">'+leg+'</div><h2 style="margin-top:26px">Carico aperto per persona</h2>'+owH+'</div>'+
-   '<div class="sheet pad"><h2>Prossimi 14 giorni</h2>'+nx+'</div>'+
-   '<div class="sheet pad"><h2>Issue da seguire</h2>'+hot+'</div>'+bud+'</div>';
+   '<div class="cols"><div class="stack"><div class="sheet pad"><h2>Stato dei task</h2><div class="seg">'+seg+'</div><div class="legend">'+leg+'</div><h2 style="margin-top:26px">Carico aperto per persona</h2><div class="hbscroll">'+owH+'</div></div>'+
+   '<div class="sheet pad"><h2>Issue da seguire</h2>'+hot+'</div></div>'+
+   '<div class="stack"><div class="sheet pad"><h2>Prossimi 14 giorni</h2>'+nx+'</div>'+bud+'</div></div>';
 }
 
 function subBlock(t){
