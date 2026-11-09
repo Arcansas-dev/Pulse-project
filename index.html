@@ -653,7 +653,7 @@ function F(k,label,type,val,extra){
   return '<label class="'+cls+'">'+esc(label)+h+'</label>';
 }
 function modal(title,fields,kind,id,canDel){
-  $("#layer").innerHTML='<div class="overlay" data-act="bg"><form class="modal" id="mform" data-kind="'+kind+'" data-id="'+(id||"")+'" role="dialog" aria-modal="true" aria-label="'+esc(title)+'"><h3>'+esc(title)+'</h3><div class="form">'+fields+'</div><div class="acts"><button class="btn pri" type="submit">Salva</button><button class="btn" type="button" data-act="close">Annulla</button>'+(canDel?'<span class="sp"></span><button class="btn danger" type="button" data-act="del" data-kind="'+kind+'" data-id="'+id+'" id="delbtn">Elimina</button>':"")+'</div></form></div>';
+  $("#layer").innerHTML='<div class="overlay" data-act="bg"><form class="modal" id="mform" data-kind="'+kind+'" data-id="'+(id||"")+'" role="dialog" aria-modal="true" aria-label="'+esc(title)+'"><h3>'+esc(title)+'</h3><div class="form">'+fields+'</div><div class="acts"><button class="btn pri" type="submit">Salva</button><button class="btn" type="button" data-act="close">Annulla</button>'+(canDel?'<span class="sp"></span><button class="btn danger" type="button" data-act="del" data-kind="'+kind+'" data-id="'+id+'" id="delbtn">'+(kind==="proj"?"Elimina progetto":"Elimina")+'</button>':"")+'</div></form></div>';
   var f=document.querySelector("#mform input,#mform textarea");if(f&&!id)f.focus();
 }
 function ownerField(v){v=v||"";var l=owners();if(v&&l.indexOf(v)<0)l.push(v);l.sort();
@@ -685,9 +685,10 @@ function msForm(m){var nw=!m;m=m||{title:"",date:"",done:false};
   modal(nw?"Nuova milestone":"Milestone",F("title","Titolo","text",m.title,{full:1,req:1})+F("date","Data","date",m.date,{req:1})+F("done","Raggiunta","select",0,{o:opts([["no","No"],["si","Sì"]],m.done?"si":"no")}),"ms",m.id,!nw)}
 function stForm(s){var nw=!s;s=s||{name:"",role:"",contact:""};
   modal(nw?"Nuovo contatto":"Contatto",F("name","Nome","text",s.name,{full:1,req:1})+F("role","Ruolo","text",s.role)+F("contact","Email o telefono","text",s.contact),"st",s.id,!nw)}
+function canDelProj(){return typeof ADMINS!=="undefined"?ADMINS.indexOf(String(whoName()).toLowerCase())>-1:true}
 function projForm(p,nw){
   p=p||{name:"",client:"",owner:"",status:"Pianificazione",start:today(),end:"",budget:"",spent:"",notes:""};
-  modal(nw?"Nuovo progetto":"Modifica progetto",F("name","Nome progetto","text",p.name,{full:1,req:1})+F("client","Cliente","text",p.client||"")+F("owner","Responsabile","text",p.owner||"")+F("status","Stato","select",0,{o:opts(PSTATUS,p.status)})+F("budget","Budget (€)","number",p.budget||"")+F("start","Inizio","date",p.start||"")+F("end","Fine prevista","date",p.end||"")+F("spent","Speso (€)","number",p.spent||"")+F("notes","Note e decisioni","textarea",p.notes||"",{full:1}),nw?"projnew":"proj",nw?"":p.id,!nw&&S.projects.length>1);
+  modal(nw?"Nuovo progetto":"Modifica progetto",F("name","Nome progetto","text",p.name,{full:1,req:1})+F("client","Cliente","text",p.client||"")+F("owner","Responsabile","text",p.owner||"")+F("status","Stato","select",0,{o:opts(PSTATUS,p.status)})+F("budget","Budget (€)","number",p.budget||"")+F("start","Inizio","date",p.start||"")+F("end","Fine prevista","date",p.end||"")+F("spent","Speso (€)","number",p.spent||"")+F("notes","Note e decisioni","textarea",p.notes||"",{full:1}),nw?"projnew":"proj",nw?"":p.id,!nw&&canDelProj());
 }
 function close(){$("#layer").innerHTML="";U.confirm=null}
 function toast(m){var e=document.createElement("div");e.className="toast";e.textContent=m;document.body.appendChild(e);setTimeout(function(){e.remove()},2200)}
@@ -719,7 +720,7 @@ function del(kind,id){
   else if(kind==="ms"){var p=proj();p.milestones=p.milestones.filter(function(m){return m.id!==id})}
   else if(kind==="note"){var p7=proj();p7.noteList=p7.noteList.filter(function(m){return m.id!==id})}
   else if(kind==="st"){var p2=proj();p2.stakeholders=p2.stakeholders.filter(function(m){return m.id!==id})}
-  else if(kind==="proj"){var pid=proj().id;S.tasks=S.tasks.filter(function(t){return t.projectId!==pid});S.issues=S.issues.filter(function(t){return t.projectId!==pid});S.projects=S.projects.filter(function(p){return p.id!==pid});S.active=S.projects[0].id}
+  else if(kind==="proj"){if(!canDelProj())return;var pid=proj().id;S.tasks=S.tasks.filter(function(t){return t.projectId!==pid});S.issues=S.issues.filter(function(t){return t.projectId!==pid});S.projects=S.projects.filter(function(p){return p.id!==pid});if(!S.projects.length)S.projects.push({id:uid(),name:"Nuovo progetto",client:"",owner:"",status:"Pianificazione",start:today(),end:"",budget:"",spent:"",notes:"",stakeholders:[],milestones:[]});S.active=S.projects[0].id}
   save();close();render();toast("Eliminato");
 }
 
@@ -799,6 +800,7 @@ document.addEventListener("keydown",function(e){if(e.key==="Escape"&&$("#layer")
 /* ---------- sincronizzazione di squadra (Supabase) ---------- */
 var SB_URL="https://odzoetrsiplkkqiibnjw.supabase.co",SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kem9ldHJzaXBsa2txaWlibmp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM4ODUwNTMsImV4cCI6MjEwOTQ2MTA1M30.i7NANUoHhTtEgMR6E8GhIM9YkFYL5ex9e4MtUrZXu6g",SNAPK="pulse-team-snap-v1";
 var DOM="@pulse.example.com";
+var ADMINS=["giacomo","gianluca","giacomo.ferri@arcansas.it","gianluca@pulse.example.com"];
 function whoName(){return session&&session.user?shortName(session.user.email):""}
 function shortName(e){e=e||"";return e.slice(-DOM.length)===DOM?e.slice(0,-DOM.length):e}
 var sb=null,session=null,syncState="",ver=0,syncing=false,again=false,ptimer=null,chan=null;
