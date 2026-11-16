@@ -113,7 +113,7 @@ svg.i{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.6;stro
 .tab .n{font:500 11px var(--mono);color:var(--mute)}
 .tab[aria-selected="true"] .n{color:var(--blue)}
 .tab .n.hot{color:var(--alert);font-weight:600}
-.burger,.dhead,.scrim{display:none}
+.burger,.dhead,.scrim,.cur{display:none}
 .drawer{display:contents}
 .sfoot{margin-top:auto;display:flex;flex-direction:column;gap:10px}
 .lnk{border:0;background:none;padding:0;color:var(--blue);font-weight:600;text-align:left}
@@ -260,8 +260,11 @@ textarea.impbox{width:100%;min-height:120px;font:400 12px var(--mono);border:1px
 @media (min-width:900px){.toast{bottom:28px}}
 
 @media (max-width:899px){
-  .app{grid-template-columns:1fr;padding-block:12px 40px}
-  .side{position:static;height:auto;border-right:0;padding:6px 0 0;gap:12px;flex-direction:row;align-items:center}
+  .app{grid-template-columns:1fr;padding-block:0 40px}
+  .side{position:sticky;top:0;z-index:30;height:auto;border-right:0;border-bottom:1px solid var(--hair2);background:var(--canvas);padding:calc(8px + env(safe-area-inset-top,0px)) 0 8px;gap:10px;flex-direction:row;align-items:center}
+  .mopen .side{z-index:70}
+  .brand .nm b{display:none}
+  .brand .nm .cur{display:block;font-weight:650;font-size:17px;letter-spacing:-.015em;white-space:nowrap}
   .side .projbox{flex:1 1 120px;min-width:0}.side .projbox>span{display:none}
   .burger{display:grid;place-items:center;flex:none;width:44px;height:44px;margin-left:-8px;border:0;background:none;border-radius:10px;color:var(--blue)}
   .burger:active{background:var(--tint)}
@@ -358,7 +361,7 @@ textarea.impbox{width:100%;min-height:120px;font:400 12px var(--mono);border:1px
 <div class="app">
   <aside class="side">
     <button class="burger" data-act="menu" aria-label="Apri il menu" aria-expanded="false" aria-controls="drawer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-    <div class="brand"><div class="nm"><b>Pulse Project</b></div></div>
+    <div class="brand"><div class="nm"><b>Pulse Project</b><span class="cur" id="cur"></span></div></div>
     <label class="projbox"><span>Progetto</span><select id="projSel" aria-label="Progetto attivo"></select></label>
     <div class="drawer" id="drawer">
       <div class="dhead"><b>Pulse Project</b><button class="dclose" data-act="menu-close" aria-label="Chiudi il menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
@@ -575,6 +578,7 @@ function renderTop(){
   var T=pT(),I=pI();
   var late=T.filter(isLate).length, oi=I.filter(openIssue).length, crit=I.filter(function(i){return openIssue(i)&&i.severity==="Critica"}).length;
   var tabs=[["dash","Panoramica",""],["tasks","Task",T.filter(function(t){return t.status!=="done"}).length],["issues","Issue",oi],["dead","Scadenze",""],["notes","Note",(proj().noteList||[]).length||""],["log","Storico",""],["info","Progetto",""],["data","Dati",""],["guide","Guida",""]];
+  var cu=document.getElementById("cur");if(cu){var ct=tabs.filter(function(t){return t[0]===U.view})[0];cu.textContent=ct?ct[1]:""}
   $("#tabs").innerHTML=tabs.map(function(t){var hot=(t[0]==="tasks"&&late)||(t[0]==="issues"&&crit);
     return '<button class="tab" role="tab" data-act="view" data-v="'+t[0]+'" aria-selected="'+(U.view===t[0])+'">'+ico(t[0])+'<span class="lbl">'+t[1]+'</span>'+(t[2]!==""?'<span class="n'+(hot?" hot":"")+'">'+t[2]+'</span>':"")+'</button>'}).join("");
 }
