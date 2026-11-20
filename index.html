@@ -106,6 +106,11 @@ svg.i{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.6;stro
 .drop{border:1.5px dashed var(--hair2);border-radius:12px;padding:22px 16px;text-align:center;color:var(--ink2);margin-bottom:16px;display:grid;gap:10px;justify-items:center}
 .drop.on{background:var(--sky);border-color:var(--blue)}
 @media(max-width:560px){.frow{grid-template-columns:1fr}.frow .fa{grid-column:1;grid-row:auto;margin-top:6px}}
+.upl{display:grid;gap:10px;margin:0 0 6px;max-height:52vh;overflow:auto}
+.upl label{display:grid;grid-template-columns:22px minmax(0,1fr);gap:10px;padding:12px;background:var(--tint);border-radius:10px;cursor:pointer;font-size:14px}
+.upl label.off{opacity:.5;cursor:default}
+.upl input{accent-color:var(--blue);width:18px;height:18px;margin-top:2px}
+.upl b{font-weight:600}.upl .k{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--blue)}.upl .w{color:var(--ink2);margin-top:2px;overflow-wrap:anywhere}
 .ngrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:4px}
 .ncard{background:var(--paper);border:1px solid var(--hair2);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px;min-width:0;text-align:left;font:inherit;color:var(--ink);cursor:pointer}
 .ncard:hover{border-color:var(--blue)}
@@ -779,6 +784,40 @@ document.addEventListener("dragover",function(e){var d=e.target.closest&&e.targe
 document.addEventListener("dragleave",function(e){var d=e.target.closest&&e.target.closest("#drop");if(d)d.classList.remove("on")});
 document.addEventListener("drop",function(e){var d=e.target.closest&&e.target.closest("#drop");if(d){e.preventDefault();d.classList.remove("on");uploadFiles(Array.prototype.slice.call(e.dataTransfer.files))}});
 
+/* aggiornamenti da documento */
+function updTarget(c){
+  if(c.op==="task-update"||c.op==="sub-add")return byId(S.tasks,c.id||c.taskId);
+  if(c.op==="issue-update")return byId(S.issues,c.id);
+  return true;
+}
+function updKind(c){return{"task-update":"Task aggiornata","task-add":"Nuova task","sub-add":"Nuova sotto-attività","issue-update":"Issue aggiornata","issue-add":"Nuova issue","note-add":"Nuova nota"}[c.op]||c.op}
+function updName(c){
+  if(c.op==="task-update"||c.op==="sub-add"){var t=byId(S.tasks,c.id||c.taskId);return t?t.title:"(task non trovata)"}
+  if(c.op==="issue-update"){var i=byId(S.issues,c.id);return i?i.title:"(issue non trovata)"}
+  if(c.op==="task-add")return c.task.title;if(c.op==="issue-add")return c.issue.title;if(c.op==="note-add")return c.title;return ""}
+function openUpdate(txt){
+  var d;try{d=JSON.parse(txt);if(!d||d.type!=="pulse-update"||!Array.isArray(d.changes))throw 0}catch(e){toast("File non valido: serve un file di aggiornamento di Pulse Project");return}
+  U.upd=d;
+  var rows=d.changes.map(function(c,i){var ok=!!updTarget(c);
+    return '<label class="'+(ok?"":"off")+'"><input type="checkbox" data-upd="'+i+'"'+(ok?" checked":" disabled")+'><span><span class="k">'+esc(updKind(c))+'</span><br><b>'+esc(updName(c))+'</b><div class="w">'+esc(c.label||"")+'</div></span></label>'}).join("");
+  $("#layer").innerHTML='<div class="overlay" data-act="bg"><div class="modal" role="dialog" aria-modal="true" aria-label="Aggiornamento"><h3>Aggiornamento'+(d.date?" del "+esc(fmt(d.date)):"")+'</h3><p class="note">'+esc(d.source||"")+'. '+d.changes.length+' modifiche proposte: togli la spunta a quelle che non vuoi applicare.</p><div class="upl">'+rows+'</div><div class="acts"><button class="btn pri" type="button" data-act="upd-apply">Applica le selezionate</button><button class="btn" type="button" data-act="close">Annulla</button></div></div></div>';
+}
+function applyUpdate(){
+  var d=U.upd;if(!d)return;var n=0,tag=d.date?fmt(d.date).slice(0,5):"",now=new Date().toISOString(),p=proj();
+  function app(old,txt){return (old?old+"\n":"")+(tag?tag+": ":"")+txt}
+  d.changes.forEach(function(c,i){
+    var cb=document.querySelector('[data-upd="'+i+'"]');if(!cb||!cb.checked)return;
+    if(c.op==="task-update"){var t=byId(S.tasks,c.id);if(!t)return;Object.assign(t,c.set||{});if(c.noteAppend)t.notes=app(t.notes,c.noteAppend);n++}
+    else if(c.op==="task-add"){S.tasks.push(Object.assign({id:uid(),projectId:p.id,desc:"",status:"todo",priority:"Media",owner:"",start:"",due:"",est:0,dep:[],notes:"",tags:""},c.task));n++}
+    else if(c.op==="sub-add"){var t2=byId(S.tasks,c.taskId);if(!t2)return;t2.sub=t2.sub||[];t2.sub.push({id:uid(),done:false,due:c.sub.due||"",owner:c.sub.owner||"",title:c.sub.title});n++}
+    else if(c.op==="issue-update"){var is=byId(S.issues,c.id);if(!is)return;Object.assign(is,c.set||{});if(c.noteAppend)is.desc=app(is.desc,c.noteAppend);n++}
+    else if(c.op==="issue-add"){S.issues.push(Object.assign({id:uid(),projectId:p.id,type:"Issue",desc:"",action:"",severity:"Media",status:"Aperta",owner:"",created:today(),due:"",taskId:""},c.issue));n++}
+    else if(c.op==="note-add"){p.noteList=p.noteList||[];p.noteList.push({id:uid(),title:c.title,text:c.text||"",pin:!!c.pin,upd:now});n++}
+  });
+  if(n){S.log=S.log||[];S.log.push({id:uid(),ts:now,who:actor(),text:"ha applicato un aggiornamento da documento: "+n+" modifiche ("+(d.source||"")+")"})}
+  U.upd=null;save();close();render();toast(n?n+" modifiche applicate":"Nessuna modifica selezionata");
+}
+
 function viewDead(){
   var p=proj(),td=today(),items=[];
   pT().filter(function(t){return t.status!=="done"&&t.due}).forEach(function(t){items.push({d:t.due,k:"Task",t:t.title,id:t.id,kind:"task",o:t.owner})});
@@ -808,6 +847,7 @@ function viewData(){
   return '<div class="page-h"><div><div class="eyebrow">Backup</div><h1 style="margin-top:8px">Dati</h1><div class="sub">I dati sono condivisi con il team e si sincronizzano da soli. Una copia resta su questo dispositivo anche senza connessione.</div></div></div>'+
    '<div class="cols" style="margin-top:0"><div class="sheet pad"><h2>Esporta</h2><p class="note">Un file JSON con tutto, i task con le sotto-attività in CSV per Excel, oppure un report leggibile in TXT o HTML.</p><div class="acts" style="margin-top:0"><button class="btn pri" data-act="exp-json">Esporta JSON</button><button class="btn" data-act="exp-csv">Task in CSV</button><button class="btn" data-act="exp-txt">Report TXT</button><button class="btn" data-act="exp-html">Report HTML</button><button class="btn" data-act="copy-json">Copia JSON</button></div></div>'+
    '<div class="sheet pad"><h2>Importa</h2><p class="note">Sostituisce i dati di tutto il team con il backup.</p><div class="acts" style="margin-top:0"><label class="btn" style="cursor:pointer">Scegli file JSON<input id="impf" type="file" accept=".json,application/json" hidden></label></div><textarea id="impt" class="impbox" placeholder="Oppure incolla qui il JSON" aria-label="JSON da importare" style="margin-top:12px"></textarea><div class="acts" style="margin-top:12px"><button class="btn danger" data-act="imp-txt">Importa dal testo</button></div></div>'+
+   '<div class="sheet pad"><h2>Importa aggiornamento</h2><p class="note">Carica un file di aggiornamento preparato da un documento (per esempio la sintesi di un meeting). Vedi le modifiche proposte e scegli quali applicare: i dati attuali non vengono sostituiti.</p><div class="acts" style="margin-top:0"><label class="btn pri" style="cursor:pointer">Scegli file di aggiornamento<input id="updf" type="file" accept=".json,application/json" hidden></label></div></div>'+
    '<div class="sheet pad"><h2>Account</h2><p class="note">Accesso come <b id="whoami2">'+esc(document.getElementById("whoami")?document.getElementById("whoami").textContent:"")+'</b>. Le modifiche di tutti arrivano qui in pochi secondi.</p><div class="acts" style="margin-top:0"><button class="btn" data-act="logout">Esci</button></div></div></div>';
 }
 
@@ -991,6 +1031,7 @@ document.addEventListener("click",function(e){
    case "new-ms":msForm();break;
    case "open-ms":msForm(byId(proj().milestones,id));break;
    case "new-note":noteForm();break;
+   case "upd-apply":applyUpdate();break;
    case "file-get":getFile(t.dataset.id);break;
    case "file-del":if(U.confirm==="f"+t.dataset.id)delFile(t.dataset.id);else{U.confirm="f"+t.dataset.id;render()}break;
    case "open-note":noteForm(byId(proj().noteList,id));break;
@@ -1017,6 +1058,7 @@ document.addEventListener("input",function(e){var k=e.target.dataset&&e.target.d
   var v=e.target.value;if(k==="q")U.f.q=v;else if(k==="st")U.f.st=v;else if(k==="ow")U.f.ow=v;else if(k==="cat")U.f.cat=v;else if(k==="nq")U.nq=v;else if(k==="lq")U.lq=v;else if(k==="iq")U.fi.q=v;else if(k==="ist")U.fi.st=v;else if(k==="isv")U.fi.sv=v;render()});
 document.addEventListener("change",function(e){
   if(e.target.dataset&&e.target.dataset.own){var ni=e.target.parentNode.querySelector("[name=owner_new]");if(ni){ni.hidden=e.target.value!=="__new__";if(!ni.hidden)ni.focus()}return}
+  if(e.target.id==="updf"&&e.target.files[0]){var ur=new FileReader();ur.onload=function(){openUpdate(ur.result)};ur.readAsText(e.target.files[0]);e.target.value="";return}
   if(e.target.id==="upf"&&e.target.files.length){uploadFiles(Array.prototype.slice.call(e.target.files));e.target.value="";return}
   if(e.target.id==="projSel"){S.active=e.target.value;save();render()}
   if(e.target.id==="impf"&&e.target.files[0]){var r=new FileReader();r.onload=function(){document.getElementById("impt").value=r.result;U.confirm="imp";var b=document.querySelector('[data-act="imp-txt"]');if(b)b.textContent="Conferma: sostituisci tutto";toast("File caricato. Premi Conferma per sostituire i dati.")};r.readAsText(e.target.files[0])}
